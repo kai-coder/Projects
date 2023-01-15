@@ -68,6 +68,7 @@ class Loss_CategoricalCrossentropy(Loss):
             correct_confidences = np.sum(y_pred_clipped * y_true, axis=1)
 
         self.negative_log_likelihoods = -np.log(correct_confidences)
+        print(self.negative_log_likelihoods)
         return self.negative_log_likelihoods
 
     def backward(self, dvalues, y_true):
@@ -102,7 +103,7 @@ class Optimizer_SGD:
         layer.weights += -self.learning_rate * layer.dweights
         layer.biases += -self.learning_rate * layer.dbiases
 
-X, y = spiral_data(samples=100, classes=3)
+X, y = spiral_data(samples=1, classes=1)
 
 dense1 = Layer_Dense(2, 64)
 activaton1 = Activation_ReLU()
@@ -114,7 +115,7 @@ loss_activation = Activation_Softmax_Loss_CategoricalCrossentropy()
 optimizer = Optimizer_SGD()
 lossStorage = []
 accStorage = []
-for i in range(100001):
+for i in range(1):
     dense1.forward(X)
     activaton1.forward(dense1.output)
 
@@ -140,27 +141,27 @@ for i in range(100001):
     optimizer.update_params(dense1)
     optimizer.update_params(dense2)
 
-width = 300
-height = 300
-img = Image.new('RGB', (width, height))
-pixels = []
-for j in range(height):
-    for i in range(width):
-        dense1.forward(np.array([(i / width) * 2 - 1, -(j / height) * 2 + 1]))
-        activaton1.forward(dense1.output)
-
-        dense2.forward(activaton1.output)
-
-        activaton2.forward(dense2.output)
-
-        loss = loss_activation.forward(dense2.output, y)
-        pixels.append((int(loss_activation.output[0][1] * 255), int(loss_activation.output[0][2] * 255), int(loss_activation.output[0][0] * 255)))
-img.putdata(pixels)
-img.save('image.png')
-pixels = mpimg.imread("image.png")
-plt.imshow(pixels, extent=[-1, 1, -1, 1])
-plt.scatter(X[:, 0], X[:, 1], c=y, cmap="brg", edgecolors='black')
-plt.show()
-plt.plot(range(101), lossStorage)
-plt.plot(range(101), accStorage)
-plt.show()
+# width = 300
+# height = 300
+# img = Image.new('RGB', (width, height))
+# pixels = []
+# for j in range(height):
+#     for i in range(width):
+#         dense1.forward(np.array([(i / width) * 2 - 1, -(j / height) * 2 + 1]))
+#         activaton1.forward(dense1.output)
+#
+#         dense2.forward(activaton1.output)
+#
+#         activaton2.forward(dense2.output)
+#
+#         loss = loss_activation.forward(dense2.output, y)
+#         pixels.append((int(loss_activation.output[0][1] * 255), int(loss_activation.output[0][2] * 255), int(loss_activation.output[0][0] * 255)))
+# img.putdata(pixels)
+# img.save('image.png')
+# pixels = mpimg.imread("image.png")
+# plt.imshow(pixels, extent=[-1, 1, -1, 1])
+# plt.scatter(X[:, 0], X[:, 1], c=y, cmap="brg", edgecolors='black')
+# plt.show()
+# plt.plot(range(101), lossStorage)
+# plt.plot(range(101), accStorage)
+# plt.show()
